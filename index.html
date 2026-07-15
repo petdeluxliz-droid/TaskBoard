@@ -997,15 +997,6 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
   <div class="panel-actions" id="panel-actions">
     <!-- 動態渲染操作按鈕 -->
   </div>
-
-  <!-- 留言輸入 -->
-  <div class="comment-input-area">
-    <textarea id="comment-input" placeholder="輸入留言…" rows="1"
-      onkeydown="if(event.key==='Enter'&&(event.ctrlKey||event.metaKey)){sendComment();event.preventDefault()}"
-      oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'">
-    </textarea>
-    <button class="btn btn-primary" onclick="sendComment()">送出</button>
-  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -1271,6 +1262,12 @@ function renderSidebar() {
   document.getElementById('user-role').textContent = isAdmin ? '管理者' : '一般員工';
 
   const nav = document.getElementById('nav-main');
+  const myTasksLink = isAdmin ? `
+    <button class="nav-item" data-view="tasks-mine" onclick="switchView('tasks-mine')">
+      <span class="icon">${icon('user')}</span> <span class="label">我的任務</span>
+    </button>
+  ` : '';
+
   const adminLinks = isAdmin ? `
     <button class="nav-item" data-view="tasks-all" onclick="switchView('tasks-all')">
       <span class="icon">${icon('list')}</span> <span class="label">所有任務</span>
@@ -1284,9 +1281,7 @@ function renderSidebar() {
     <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
       <span class="icon">${icon('home')}</span> <span class="label">首頁</span>
     </button>
-    <button class="nav-item" data-view="tasks-mine" onclick="switchView('tasks-mine')">
-      <span class="icon">${icon('user')}</span> <span class="label">我的任務</span>
-    </button>
+    ${myTasksLink}
     ${adminLinks}
     <button class="nav-item" data-view="tasks-done" onclick="switchView('tasks-done')">
       <span class="icon">${icon('checkBox')}</span> <span class="label">已完成</span>
@@ -1665,7 +1660,6 @@ async function openTask(taskId) {
     if (App.user.Role === 'Admin' && App.users.length === 0) await loadUsers();
 
     renderTaskDetail(task);
-    await loadAndRenderComments(taskId);
   } catch (e) {
     showToast('載入任務失敗：' + e.message, 'error');
     closePanel();
@@ -1933,7 +1927,6 @@ async function refreshTask(taskId) {
   if (updated) {
     App.openTask = updated;
     renderTaskDetail(updated);
-    await loadAndRenderComments(taskId);
   }
 }
 

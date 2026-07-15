@@ -86,6 +86,9 @@ html, body {
   font-size: 32px;
   font-weight: 700;
   color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 #loading-screen .spinner {
   width: 40px; height: 40px;
@@ -119,6 +122,10 @@ html, body {
   font-family: 'Fredoka', sans-serif;
   font-size: 38px; font-weight: 700; color: var(--primary);
   margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 .login-card .tagline {
   color: var(--text-2); margin-bottom: 32px; font-size: 15px;
@@ -865,7 +872,10 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
      載入畫面
 ══════════════════════════════════════ -->
 <div id="loading-screen">
-  <div class="logo-text">📋 TaskBoard</div>
+  <div class="logo-text">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+    TaskBoard
+  </div>
   <div class="spinner"></div>
   <div style="color:#9AA0A6;font-size:13px">正在確認身份…</div>
 </div>
@@ -875,7 +885,10 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
 ══════════════════════════════════════ -->
 <div id="login-screen" style="display:none">
   <div class="login-card">
-    <div class="brand">📋 TaskBoard</div>
+    <div class="brand">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+      TaskBoard
+    </div>
     <div class="tagline">任務確認管理系統</div>
     
     <!-- 外部託管時顯示的設定欄位 -->
@@ -885,7 +898,7 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
     </div>
 
     <div class="form-group" style="text-align: left; margin-top: 14px;">
-      <label class="form-label" style="font-weight: 600; color: var(--text);">電子信箱 Email</label>
+      <label class="form-label" style="font-weight: 600; color: var(--text);">電子信箕 Email</label>
       <input type="email" id="login-email" class="form-control" placeholder="請輸入您的 Email" style="padding: 12px 14px;">
     </div>
     <div class="form-group" style="text-align: left; margin-top: 14px;">
@@ -893,7 +906,8 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
       <input type="password" id="login-pin" class="form-control" placeholder="請輸入 PIN 碼" maxlength="12" style="padding: 12px 14px; letter-spacing: 4px; text-align: center; font-size: 18px;">
     </div>
     <button class="btn btn-primary" onclick="handleLoginSubmit()" style="width: 100%; padding: 12px; font-size: 15px; font-weight: 600; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-      <span>🔑</span> 驗證登入
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      驗證登入
     </button>
   </div>
 </div>
@@ -906,7 +920,10 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
   <!-- ── 側邊欄 ─────────────────────────── -->
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-brand"><span>📋</span><span class="text">TaskBoard</span></div>
+      <div class="sidebar-brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>
+        <span class="text">TaskBoard</span>
+      </div>
       <div class="sidebar-tagline">任務確認管理系統</div>
     </div>
 
@@ -927,8 +944,9 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
       <div class="nav-section" id="nav-admin-section" style="display:none;">
         <div class="nav-section-title">快速操作</div>
         <button class="btn btn-primary" id="nav-create-btn"
-          onclick="openCreateTask()" style="width: 100%; margin-top: 8px; font-size: 14px; padding: 10px;">
-          ➕ 新增任務
+          onclick="openCreateTask()" style="width: 100%; margin-top: 8px; font-size: 14px; padding: 10px; display:flex; align-items:center; justify-content:center; gap:6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新增任務
         </button>
       </div>
     </nav>
@@ -943,12 +961,15 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
 
     <!-- 頂部欄 -->
     <div class="topbar">
-      <button class="hamburger" onclick="toggleMobileSidebar()">☰</button>
+      <button class="hamburger" onclick="toggleMobileSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <div class="topbar-title" id="topbar-title">首頁</div>
 
       <button class="btn btn-primary" id="topbar-create-btn"
-        onclick="openCreateTask()" style="display:none">
-        ➕ 新增任務
+        onclick="openCreateTask()" style="display:none; align-items:center; gap:6px;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        新增任務
       </button>
     </div>
 
@@ -1018,7 +1039,7 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
 
 
 <!-- 圓形懸浮新增任務按鈕 (FAB) -->
-<button class="fab" id="fab-create" onclick="openCreateTask()" title="新增任務">➕</button>
+<button class="fab" id="fab-create" onclick="openCreateTask()" title="新增任務">&#43;</button>
 
 <!-- 前端邏輯 -->
 <!-- app.html -->
@@ -1027,6 +1048,33 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
 // ═══════════════════════════════════════════════
 // TaskBoard — 前端 JavaScript
 // ═══════════════════════════════════════════════
+
+// ═══════════════════════════════════════════════
+// SVG Icon Library — Feather/Lucide 風格
+// stroke-based · 1.75px · round · currentColor
+// ═══════════════════════════════════════════════
+const ICONS = {
+  home:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-9.5z"/><path d="M9 21V13h6v8"/></svg>`,
+  list:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="6" r="1.25" fill="currentColor" stroke="none"/><circle cx="4.5" cy="12" r="1.25" fill="currentColor" stroke="none"/><circle cx="4.5" cy="18" r="1.25" fill="currentColor" stroke="none"/></svg>`,
+  user:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>`,
+  users:    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3.5"/><path d="M2 20c0-3.3 3.1-6 7-6s7 2.7 7 6"/><path d="M16 3.5a3.5 3.5 0 0 1 0 7"/><path d="M22 20c0-3-2.5-5.3-6-5.8"/></svg>`,
+  check:    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`,
+  checkBox: `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><polyline points="8 12 11 15 16 9"/></svg>`,
+  logout:   `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
+  edit:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+  trash:    `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>`,
+  bell:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`,
+  calendar: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  plus:     `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>`,
+  archive:  `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5" rx="1"/><line x1="10" y1="12" x2="14" y2="12"/></svg>`,
+  star:     `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  board:    `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="12" y2="16"/></svg>`,
+};
+function icon(name, extraStyle = '') {
+  const svg = ICONS[name] || '';
+  if (!extraStyle) return svg;
+  return svg.replace('<svg ', `<svg style="${extraStyle}" `);
+}
 
 // ── 全域狀態 ──────────────────────────────────
 const App = {
@@ -1241,26 +1289,26 @@ function renderSidebar() {
   const nav = document.getElementById('nav-main');
   const adminLinks = isAdmin ? `
     <button class="nav-item" data-view="tasks-all" onclick="switchView('tasks-all')">
-      <span class="icon">📋</span> <span class="label">所有任務</span>
+      <span class="icon">${icon('list')}</span> <span class="label">所有任務</span>
     </button>
     <button class="nav-item" data-view="users" onclick="switchView('users')">
-      <span class="icon">👥</span> <span class="label">成員管理</span>
+      <span class="icon">${icon('users')}</span> <span class="label">成員管理</span>
     </button>
   ` : '';
 
   nav.innerHTML = `
     <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
-      <span class="icon">🏠</span> <span class="label">首頁</span>
+      <span class="icon">${icon('home')}</span> <span class="label">首頁</span>
     </button>
     <button class="nav-item" data-view="tasks-mine" onclick="switchView('tasks-mine')">
-      <span class="icon">✅</span> <span class="label">我的任務</span>
+      <span class="icon">${icon('user')}</span> <span class="label">我的任務</span>
     </button>
     ${adminLinks}
     <button class="nav-item" data-view="tasks-done" onclick="switchView('tasks-done')">
-      <span class="icon">📁</span> <span class="label">已完成</span>
+      <span class="icon">${icon('checkBox')}</span> <span class="label">已完成</span>
     </button>
     <button class="nav-item" style="margin-top: 16px; color: var(--danger);" onclick="logout()">
-      <span class="icon">🚪</span> <span class="label">登出系統</span>
+      <span class="icon">${icon('logout')}</span> <span class="label">登出系統</span>
     </button>
   `;
   // ★ 所有人都能顯示「新增任務」按鈕，改為更明顯的樣式
@@ -1368,12 +1416,12 @@ function renderDashboard() {
 
   let html = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-      <h2 style="font-size:20px; font-weight:600; color:var(--text-1); margin:0;">📋 任務便條紙</h2>
+      <h2 style="display:flex; align-items:center; gap:8px; font-size:20px; font-weight:600; color:var(--text); margin:0;">${icon('board')} 任務便條紙</h2>
     </div>
   `;
 
   if (activeTasks.length === 0) {
-    html += emptyState('🎉', '目前沒有待處理任務', '所有任務都已完成！');
+    html += emptyState(icon('star'), '目前沒有待處理任務', '所有任務都已完成！');
   } else {
     // 渲染便條紙網格
     html += `
@@ -1414,10 +1462,10 @@ function renderStickyNote(task) {
       .filter(Boolean)
       .join(', ');
     if (alarms) {
-      alarmChip = `<span class="chip" style="border-color: var(--primary); color: var(--primary); cursor: pointer; display: inline-flex;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" title="點擊調整提醒">🔔 ${alarms}</span>`;
+      alarmChip = `<span class="chip" style="border-color: var(--primary); color: var(--primary); cursor: pointer; display: inline-flex; align-items:center; gap:4px;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" title="點擊調整提醒">${icon('bell')} ${alarms}</span>`;
     }
   } else {
-    alarmChip = `<span class="chip" style="cursor: pointer; opacity: 0.6; display: inline-flex;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')">🔔 點此設定提醒</span>`;
+    alarmChip = `<span class="chip" style="cursor: pointer; opacity: 0.6; display: inline-flex; align-items:center; gap:4px;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')">${icon('bell')} 點此設定提醒</span>`;
   }
 
   return `
@@ -1425,9 +1473,9 @@ function renderStickyNote(task) {
       
       <!-- 右上角編輯與刪除動作區 -->
       <div style="position: absolute; top: 14px; right: 14px; display: flex; gap: 4px; z-index: 10;">
-        <button onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" style="background:none; border:none; cursor:pointer; font-size:16px; padding:4px;" title="提醒設定">🔔</button>
-        ${!isCompleted ? `<button onclick="event.stopPropagation(); openEditTask('${task.TaskID}')" style="background:none; border:none; cursor:pointer; font-size:16px; padding:4px;" title="編輯">✏️</button>` : ''}
-        <button onclick="event.stopPropagation(); deleteTaskDirectly('${task.TaskID}')" style="background:none; border:none; cursor:pointer; font-size:16px; padding:4px;" title="刪除">🗑️</button>
+        <button onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-2);" title="提醒設定">${icon('bell')}</button>
+        ${!isCompleted ? `<button onclick="event.stopPropagation(); openEditTask('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-2);" title="編輯">${icon('edit')}</button>` : ''}
+        <button onclick="event.stopPropagation(); deleteTaskDirectly('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-3);" title="刪除">${icon('trash')}</button>
       </div>
 
       <!-- 標題 -->
@@ -1442,19 +1490,19 @@ function renderStickyNote(task) {
       
       <!-- 底部資訊 -->
       <div style="font-size: 12.5px; color: var(--text-2); margin-top: auto; display: flex; flex-direction: column; gap: 6px;">
-        <div>👤 指派：<strong>${getAssigneeName(task.AssigneeEmail)}</strong></div>
-        <div class="chip-due ${dueClass}" style="display: inline-flex; align-items: center; gap: 4px;">📅 截止：${dueText}</div>
+        <div style="display:flex; align-items:center; gap:4px;"><span style="opacity:0.5;">${icon('user', 'width:13px;height:13px;')}</span> 指派：<strong>${getAssigneeName(task.AssigneeEmail)}</strong></div>
+        <div class="chip-due ${dueClass}" style="display: inline-flex; align-items: center; gap: 4px;">${icon('calendar')} 截止：${dueText}</div>
         <div style="margin-top: 2px;">${alarmChip}</div>
       </div>
       
       <!-- 狀態或完成按鈕 -->
       <div style="margin-top: 8px; z-index: 10;">
         ${isCompleted 
-          ? `<div style="text-align:center; padding: 10px; font-weight: 700; color: var(--success); border: 2px dashed var(--success); border-radius: var(--radius-sm); font-size: 13px; background: var(--success-lt);">
-               ✅ 已完成
+          ? `<div style="text-align:center; padding: 10px; font-weight: 700; color: var(--success); border: 2px dashed var(--success); border-radius: var(--radius-sm); font-size: 13px; background: var(--success-lt); display:flex; align-items:center; justify-content:center; gap:6px;">
+               ${icon('check')} 已完成
              </div>`
           : `<button onclick="markCompleted(event, '${task.TaskID}')" class="btn btn-success" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-               <span>✔</span> 標示為完成
+               ${icon('check')} 標示為完成
              </button>`
         }
       </div>
@@ -1464,7 +1512,7 @@ function renderStickyNote(task) {
 
 // 直接刪除便條紙
 async function deleteTaskDirectly(taskId) {
-  if (!confirm('⚠️ 確定要刪除這張便條紙（任務）嗎？此動作無法復原。')) return;
+  if (!confirm('確定要刪除這張便條紙（任務）嗎？此動作無法復原。')) return;
   try {
     await api('deleteTask', { taskId });
     showToast('便條紙已撕除（任務刪除）', 'success');
@@ -1535,11 +1583,11 @@ function renderTaskList(mode) {
   let html = `
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
       <h2 style="font-size:20px; font-weight:600; color:var(--text-1); margin:0;">
-        ${mode === 'done' ? '✅ 已完成的便條' : '📋 任務便條紙'}
+        ${mode === 'done' ? `<span style="display:inline-flex;align-items:center;gap:6px;">${icon('checkBox')} 已完成的便條</span>` : `<span style="display:inline-flex;align-items:center;gap:6px;">${icon('board')} 任務便條紙</span>`}
       </h2>
     </div>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-      ${tasks.length ? tasks.map(renderStickyNote).join('') : emptyState('📭','沒有任務','目前沒有符合條件的任務。')}
+      ${tasks.length ? tasks.map(renderStickyNote).join('') : emptyState('&#9747;','沒有任務','目前沒有符合條件的任務。')}
     </div>
   `;
   document.getElementById('main-content').innerHTML = html;
@@ -1563,7 +1611,7 @@ function renderTaskCard(task) {
   const dueClass = isOverdue ? 'overdue' : isTodayDue ? 'today' : '';
   const dueText  = due ? formatDate(due) : '無截止日';
 
-  const assigneeName = isAdmin ? `<span class="chip chip-assignee">👤 ${getAssigneeName(task.AssigneeEmail)}</span>` : '';
+  const assigneeName = isAdmin ? `<span class="chip chip-assignee" style="display:inline-flex;align-items:center;gap:3px;">${icon('user', 'width:12px;height:12px;')} ${getAssigneeName(task.AssigneeEmail)}</span>` : '';
   const isCompleted = ['完成','封存'].includes(task.Status);
   const cardClass = isCompleted ? 'task-card completed' : 'task-card';
 
@@ -1573,7 +1621,7 @@ function renderTaskCard(task) {
       <div class="card-desc">${esc(task.Description || '')}</div>
       <div class="card-meta">
         ${statusBadgeSmall(task.Status)}
-        <span class="chip chip-due ${dueClass}">📅 ${dueText}</span>
+        <span class="chip chip-due ${dueClass}" style="display:inline-flex;align-items:center;gap:3px;">${icon('calendar')} ${dueText}</span>
         ${assigneeName}
         <span class="priority-badge priority-${task.Priority || '一般'}">${task.Priority || '一般'}</span>
       </div>
@@ -1692,24 +1740,6 @@ function renderTaskDetail(task) {
       <div class="info-label">備註</div>
       <div class="info-value pre">${esc(task.Notes)}</div>
     </div>` : ''}
-
-    <hr class="divider">
-
-    <!-- 員工理解內容 -->
-    <div class="info-block" id="understanding-block">
-      <div class="info-label">員工理解內容</div>
-      ${buildUnderstandingSection(task, isAdmin, isAssignee)}
-    </div>
-
-    <hr class="divider">
-
-    <!-- 留言區 -->
-    <div class="info-block">
-      <div class="info-label" style="margin-bottom:12px">留言</div>
-      <div class="comments-list" id="comments-list">
-        <div style="color:var(--text-3);font-size:13px">載入中…</div>
-      </div>
-    </div>
   `;
 
   document.getElementById('panel-body').innerHTML = body;
@@ -1723,8 +1753,8 @@ function buildUnderstandingSection(task, isAdmin, isAssignee) {
       <div class="info-value pre">${esc(task.Understanding)}</div>
       ${isAdmin && task.Status === '等待主管確認' ? `
         <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-success btn-sm" onclick="confirmUnderstanding('${task.TaskID}')">✅ 確認理解內容</button>
-          <button class="btn btn-outline btn-sm" onclick="rejectUnderstanding('${task.TaskID}')">↩️ 退回修正</button>
+          <button class="btn btn-success btn-sm" onclick="confirmUnderstanding('${task.TaskID}')">&#10003; 確認理解內容</button>
+          <button class="btn btn-outline btn-sm" onclick="rejectUnderstanding('${task.TaskID}')">&#8617; 退回修正</button>
         </div>
       ` : ''}
     `;
@@ -1739,7 +1769,7 @@ function buildUnderstandingSection(task, isAdmin, isAssignee) {
           placeholder="我要：&#10;1. …&#10;2. …&#10;&#10;預計完成日期：…"></textarea>
         <div style="margin-top:10px;display:flex;justify-content:flex-end">
           <button class="btn btn-primary" onclick="submitUnderstanding('${task.TaskID}')">
-            📝 送出理解內容
+            &#9998; 送出理解內容
           </button>
         </div>
       </div>
@@ -1754,19 +1784,19 @@ function buildActionButtons(task, isAdmin, isAssignee) {
 
   if (isAdmin) {
     if (task.Status !== '完成' && task.Status !== '封存') {
-      btns.push(`<button class="btn btn-outline btn-sm" onclick="openEditTask('${task.TaskID}')">✏️ 編輯任務</button>`);
+      btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;" onclick="openEditTask('${task.TaskID}')">${icon('edit')} 編輯任務</button>`);
     }
     if (task.Status === '待驗收') {
-      btns.push(`<button class="btn btn-success" onclick="acceptTask('${task.TaskID}')">🎯 驗收完成</button>`);
+      btns.push(`<button class="btn btn-success" style="display:inline-flex;align-items:center;gap:6px;" onclick="acceptTask('${task.TaskID}')">${icon('check')} 驗收完成</button>`);
     }
     if (task.Status === '完成') {
-      btns.push(`<button class="btn btn-outline btn-sm" onclick="archiveTask('${task.TaskID}')">📦 封存</button>`);
+      btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;" onclick="archiveTask('${task.TaskID}')">${icon('archive')} 封存</button>`);
     }
-    btns.push(`<button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger)" onclick="deleteTask('${task.TaskID}')">🗑 刪除</button>`);
+    btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;color:var(--danger);border-color:var(--danger);" onclick="deleteTask('${task.TaskID}')">${icon('trash')} 刪除</button>`);
   }
 
   if (isAssignee && task.Status === '進行中') {
-    btns.push(`<button class="btn btn-primary" onclick="markComplete('${task.TaskID}')">✅ 標示完成</button>`);
+    btns.push(`<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;" onclick="markComplete('${task.TaskID}')">${icon('check')} 標示完成</button>`);
   }
 
   return btns.join('');
@@ -1980,10 +2010,10 @@ function showTaskModal(task) {
           ${userOptions}
         </select>
       </div>
-      <div class="form-group">
-        <label class="form-label">截止時間 <span class="required">*</span></label>
-        <input id="f-due" type="datetime-local" class="form-control" value="${formatForDatetimeLocal(task?.DueDate)}">
-      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">截止時間 <span class="required">*</span></label>
+      <input id="f-due" type="datetime-local" class="form-control" value="${formatForDatetimeLocal(task?.DueDate)}">
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -2191,8 +2221,8 @@ function renderUsers() {
   const users = App.users;
   const html = `
     <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
-      <button class="btn btn-primary" onclick="openAddUserModal()">
-        ➕ 新增成員
+      <button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:8px;" onclick="openAddUserModal()">
+        ${icon('plus')} 新增成員
       </button>
     </div>
     <div class="user-table-wrap fade-in">
@@ -2319,7 +2349,7 @@ function showToast(msg, type = 'info') {
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
   toast.innerHTML = `
-    <span>${type==='success'?'✅':type==='error'?'❌':type==='warning'?'⚠️':'ℹ️'}</span>
+    <span style="display:inline-flex;align-items:center;">${type==='success'?icon('check'):type==='error'?icon('trash'):type==='warning'?'<b style="font-size:15px">!</b>':'<b style="font-size:15px">i</b>'}</span>
     <span>${esc(msg)}</span>
   `;
   container.appendChild(toast);

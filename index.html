@@ -890,12 +890,7 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
       TaskBoard
     </div>
     <div class="tagline">任務確認管理系統</div>
-    
-    <!-- 外部託管時顯示的設定欄位 -->
-    <div id="gas-url-group" class="form-group" style="text-align: left; margin-top: 20px; display: none;">
-      <label class="form-label" style="font-weight: 600; color: var(--text);">Google 應用程式網址 (GAS Web App URL)</label>
-      <input type="text" id="login-gas-url" class="form-control" placeholder="https://script.google.com/macros/s/..." style="padding: 12px 14px; font-size: 13px;">
-    </div>
+
 
     <div class="form-group" style="text-align: left; margin-top: 14px;">
       <label class="form-label" style="font-weight: 600; color: var(--text);">電子信箕 Email</label>
@@ -1212,15 +1207,6 @@ function showLoginScreen() {
   showLoading(false);
   document.getElementById('app').style.display = 'none';
   document.getElementById('login-screen').style.display = 'flex';
-  
-  // 判斷是否為外部託管，如果是則顯示 GAS 網址輸入框
-  const isExternal = !(typeof google !== 'undefined' && google.script && google.script.run);
-  const gasUrlGroup = document.getElementById('gas-url-group');
-  if (gasUrlGroup) {
-    gasUrlGroup.style.display = isExternal ? 'block' : 'none';
-    const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbzGm8rqoKFk3JXN1YbmD1WAh3meyta79_9jjh91WJb7l-CgRxat1w28tn-JIt9y4Z_2Cg/exec';
-    document.getElementById('login-gas-url').value = localStorage.getItem('tb_gas_url') || DEFAULT_GAS_URL;
-  }
 }
 function showApp() {
   showLoading(false);
@@ -1234,13 +1220,11 @@ async function handleLoginSubmit() {
   const email      = emailInput.value.trim();
   const pin        = pinInput.value.trim();
 
-  // 外部託管先讀取並儲存 GAS 網址
+  // 外部託管：直接將硬編碼的 GAS 網址寫入 localStorage，不需使用者輸入
+  const DEFAULT_GAS_URL = 'https://script.google.com/macros/s/AKfycbzGm8rqoKFk3JXN1YbmD1WAh3meyta79_9jjh91WJb7l-CgRxat1w28tn-JIt9y4Z_2Cg/exec';
   const isExternal = !(typeof google !== 'undefined' && google.script && google.script.run);
   if (isExternal) {
-    const gasUrlInput = document.getElementById('login-gas-url');
-    const gasUrl = gasUrlInput ? gasUrlInput.value.trim() : '';
-    if (!gasUrl) { showToast('請輸入 GAS 應用程式網址', 'warning'); return; }
-    localStorage.setItem('tb_gas_url', gasUrl);
+    localStorage.setItem('tb_gas_url', DEFAULT_GAS_URL);
   }
 
   if (!email) { showToast('請輸入 Email', 'warning'); return; }

@@ -849,7 +849,8 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
   background: var(--surface);
   border: 2px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   box-shadow: var(--shadow);
 }
 </style>
@@ -2174,6 +2175,18 @@ function toggleMobileSidebar() {
 function closeMobileSidebar() {
   document.querySelector('.sidebar').classList.remove('mobile-open');
 }
+
+// 點擊空白處自動關閉手機側邊選單
+document.addEventListener('click', function(e) {
+  const sidebar = document.querySelector('.sidebar');
+  const hamburger = document.querySelector('.hamburger');
+  if (sidebar && sidebar.classList.contains('mobile-open')) {
+    // 若點選的區域不在側邊欄內，也不在漢堡選單按鈕內，則收合
+    if (!sidebar.contains(e.target) && (!hamburger || !hamburger.contains(e.target))) {
+      closeMobileSidebar();
+    }
+  }
+});
 
 // ═══════════════════════════════════════════════
 // Toast 通知

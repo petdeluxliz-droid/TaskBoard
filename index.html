@@ -1062,7 +1062,8 @@ const App = {
   filter:      'all',
   searchQuery: '',
   openTask:    null,
-  showCompleted: false
+  showCompleted: false,
+  showMineOnly: false
 };
 
 
@@ -1254,12 +1255,6 @@ function renderSidebar() {
   document.getElementById('user-role').textContent = isAdmin ? '管理者' : '一般員工';
 
   const nav = document.getElementById('nav-main');
-  const myTasksLink = isAdmin ? `
-    <button class="nav-item" data-view="tasks-mine" onclick="switchView('tasks-mine')">
-      <span class="icon">${icon('user')}</span> <span class="label">我的任務</span>
-    </button>
-  ` : '';
-
   const adminLinks = isAdmin ? `
     <button class="nav-item" data-view="users" onclick="switchView('users')">
       <span class="icon">${icon('users')}</span> <span class="label">成員管理</span>
@@ -1270,7 +1265,6 @@ function renderSidebar() {
     <button class="nav-item active" data-view="dashboard" onclick="switchView('dashboard')">
       <span class="icon">${icon('home')}</span> <span class="label">首頁</span>
     </button>
-    ${myTasksLink}
     ${adminLinks}
     <button class="nav-item" data-view="tasks-done" onclick="switchView('tasks-done')">
       <span class="icon">${icon('checkBox')}</span> <span class="label">已完成</span>
@@ -1347,10 +1341,6 @@ async function switchView(view) {
       topbarTitle.textContent = '首頁';
       renderDashboard();
       break;
-    case 'tasks-mine':
-      topbarTitle.textContent = '我的任務';
-      renderTaskList('mine');
-      break;
 
     case 'tasks-done':
       topbarTitle.textContent = '已完成';
@@ -1370,20 +1360,36 @@ async function switchView(view) {
 // ═══════════════════════════════════════════════
 function renderDashboard() {
   const isAdmin = App.user.Role === 'Admin';
-  const tasks = isAdmin ? App.tasks : App.tasks.filter(t => t.AssigneeEmail === App.user.Email);
+  
+  // 基礎過濾：一般員工只能看到指派給自己的任務；管理者預設看到所有人的任務，但可勾選「只顯示指派給我的任務」來過濾
+  let tasks = App.tasks;
+  if (!isAdmin || App.showMineOnly) {
+    tasks = tasks.filter(t => t.AssigneeEmail === App.user.Email);
+  }
 
   // 依據 showCompleted 狀態決定是否過濾掉已完成、已封存任務
   const filteredTasks = App.showCompleted 
     ? tasks 
     : tasks.filter(t => !['完成','封存'].includes(t.Status));
 
+  // 管理者額外顯示的篩選切換按鈕
+  const adminFilterToggle = isAdmin ? `
+    <label style="font-size:13.5px; color:var(--text-2); display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+      <input type="checkbox" onchange="App.showMineOnly = this.checked; renderDashboard()" ${App.showMineOnly ? 'checked' : ''} style="accent-color:var(--primary); width:15px; height:15px; cursor:pointer;">
+      只顯示指派給我的任務
+    </label>
+  ` : '';
+
   let html = `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
       <h2 style="display:flex; align-items:center; gap:8px; font-size:20px; font-weight:600; color:var(--text); margin:0;">${icon('board')} 任務便條紙</h2>
-      <label style="font-size:13.5px; color:var(--text-2); display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
-        <input type="checkbox" onchange="App.showCompleted = this.checked; renderDashboard()" ${App.showCompleted ? 'checked' : ''} style="accent-color:var(--primary); width:15px; height:15px; cursor:pointer;">
-        顯示已完成 / 封存任務
-      </label>
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        ${adminFilterToggle}
+        <label style="font-size:13.5px; color:var(--text-2); display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+          <input type="checkbox" onchange="App.showCompleted = this.checked; renderDashboard()" ${App.showCompleted ? 'checked' : ''} style="accent-color:var(--primary); width:15px; height:15px; cursor:pointer;">
+          顯示已完成 / 封存任務
+        </label>
+      </div>
     </div>
   `;
 

@@ -504,6 +504,25 @@ html, body {
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+.task-card .card-actions {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 4px;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+.task-card:hover .card-actions {
+  opacity: 1;
+}
+@media (max-width: 768px) {
+  .task-card .card-actions {
+    opacity: 0.8;
+  }
+}
+
 .detail-panel {
   position: fixed; top: 0; right: 0;
   width: min(600px, 100vw);
@@ -553,37 +572,7 @@ html, body {
   font-size: 12px; font-weight: 700;
 }
 
-/* 留言與回覆 */
-.comments-list { display: flex; flex-direction: column; gap: 16px; }
-.comment-item { display: flex; gap: 12px; }
-.comment-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: #fff;
-  flex-shrink: 0; margin-top: 2px;
-}
-.comment-avatar.admin { background: var(--primary); }
-.comment-avatar.member { background: var(--success); }
 
-.comment-author { font-size: 13px; font-weight: 700; }
-.comment-role { font-size: 11px; color: var(--text-3); margin-left: 6px; }
-.comment-content { font-size: 13.5px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-top: 4px; }
-.comment-time { font-size: 11px; color: var(--text-3); margin-top: 4px; }
-
-.comment-input-area {
-  padding: 20px 32px;
-  border-top: 2px solid var(--border);
-  display: flex; gap: 12px;
-}
-.comment-input-area textarea {
-  flex: 1; padding: 12px;
-  border: 2px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-size: 13.5px; font-family: inherit;
-  resize: none; min-height: 44px; max-height: 120px;
-  transition: border-color var(--transition);
-}
-.comment-input-area textarea:focus { outline: none; border-color: var(--primary); }
 
 .panel-actions {
   padding: 20px 32px;
@@ -796,6 +785,7 @@ textarea.form-control { resize: vertical; min-height: 90px; line-height: 1.6; }
   .main { margin-left: 0; }
   .hamburger { display: block; }
   .topbar { padding: 16px 24px; }
+  #topbar-create-btn { display: none !important; }
   .content { padding: 20px; }
 
   .cards-grid { grid-template-columns: 1fr; }
@@ -1070,7 +1060,8 @@ const App = {
   currentView: 'dashboard',
   filter:      'all',
   searchQuery: '',
-  openTask:    null
+  openTask:    null,
+  showCompleted: false
 };
 
 
@@ -1269,9 +1260,6 @@ function renderSidebar() {
   ` : '';
 
   const adminLinks = isAdmin ? `
-    <button class="nav-item" data-view="tasks-all" onclick="switchView('tasks-all')">
-      <span class="icon">${icon('list')}</span> <span class="label">所有任務</span>
-    </button>
     <button class="nav-item" data-view="users" onclick="switchView('users')">
       <span class="icon">${icon('users')}</span> <span class="label">成員管理</span>
     </button>
@@ -1362,10 +1350,7 @@ async function switchView(view) {
       topbarTitle.textContent = '我的任務';
       renderTaskList('mine');
       break;
-    case 'tasks-all':
-      topbarTitle.textContent = '所有任務';
-      renderTaskList('all');
-      break;
+
     case 'tasks-done':
       topbarTitle.textContent = '已完成';
       renderTaskList('done');
@@ -1386,26 +1371,28 @@ function renderDashboard() {
   const isAdmin = App.user.Role === 'Admin';
   const tasks = isAdmin ? App.tasks : App.tasks.filter(t => t.AssigneeEmail === App.user.Email);
 
-  const today = new Date(); today.setHours(0,0,0,0);
-  const todayEnd = new Date(today); todayEnd.setDate(todayEnd.getDate() + 1);
-  const weekEnd  = new Date(today); weekEnd.setDate(weekEnd.getDate() + 7);
-
-  // 極簡化：不再顯示複雜的統計資料與篩選，直接顯示便條紙牆
-  const activeTasks = tasks.filter(t => !['完成','封存'].includes(t.Status));
+  // 依據 showCompleted 狀態決定是否過濾掉已完成、已封存任務
+  const filteredTasks = App.showCompleted 
+    ? tasks 
+    : tasks.filter(t => !['完成','封存'].includes(t.Status));
 
   let html = `
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
       <h2 style="display:flex; align-items:center; gap:8px; font-size:20px; font-weight:600; color:var(--text); margin:0;">${icon('board')} 任務便條紙</h2>
+      <label style="font-size:13.5px; color:var(--text-2); display:flex; align-items:center; gap:6px; cursor:pointer; user-select:none;">
+        <input type="checkbox" onchange="App.showCompleted = this.checked; renderDashboard()" ${App.showCompleted ? 'checked' : ''} style="accent-color:var(--primary); width:15px; height:15px; cursor:pointer;">
+        顯示已完成 / 封存任務
+      </label>
     </div>
   `;
 
-  if (activeTasks.length === 0) {
-    html += emptyState(icon('star'), '目前沒有待處理任務', '所有任務都已完成！');
+  if (filteredTasks.length === 0) {
+    html += emptyState(icon('star'), '目前沒有任務', '目前尚無符合條件的便條紙。');
   } else {
     // 渲染便條紙網格
     html += `
       <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-        ${activeTasks.map(renderStickyNote).join('')}
+        ${filteredTasks.map(renderStickyNote).join('')}
       </div>
     `;
   }
@@ -1425,7 +1412,7 @@ function renderStickyNote(task) {
   const isCompleted = ['完成', '封存'].includes(task.Status);
   const cardClass = isCompleted ? 'task-card completed' : 'task-card';
 
-  // 提醒通知標籤
+  // 提醒通知標籤 (僅在有設定時顯示)
   let alarmChip = '';
   const taskNotifyDays = task.Notes ? String(task.Notes).split(',').map(s => s.trim()).filter(Boolean) : [];
   if (taskNotifyDays.length > 0) {
@@ -1441,17 +1428,27 @@ function renderStickyNote(task) {
       .filter(Boolean)
       .join(', ');
     if (alarms) {
-      alarmChip = `<span class="chip" style="border-color: var(--primary); color: var(--primary); cursor: pointer; display: inline-flex; align-items:center; gap:4px;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" title="點擊調整提醒">${icon('bell')} ${alarms}</span>`;
+      alarmChip = `<div style="margin-top: 2px;"><span class="chip" style="border-color: var(--primary); color: var(--primary); cursor: pointer; display: inline-flex; align-items:center; gap:4px;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" title="點擊調整提醒">${icon('bell')} ${alarms}</span></div>`;
     }
-  } else {
-    alarmChip = `<span class="chip" style="cursor: pointer; opacity: 0.6; display: inline-flex; align-items:center; gap:4px;" onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')">${icon('bell')} 點此設定提醒</span>`;
   }
+
+  const isAdmin = App.user.Role === 'Admin';
+  const assigneeLine = isAdmin ? `<div style="display:flex; align-items:center; gap:4px;"><span style="opacity:0.5;">${icon('user', 'width:13px;height:13px;')}</span> 指派：<strong>${getAssigneeName(task.AssigneeEmail)}</strong></div>` : '';
+
+  // 只有未完成的任務才顯示完成按鈕 (已完成任務不顯示任何按鈕/虛線框以減少高度與噪音)
+  const actionButton = !isCompleted 
+    ? `<div style="margin-top: 8px; z-index: 10;">
+         <button onclick="markCompleted(event, '${task.TaskID}')" class="btn btn-success" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
+           ${icon('check')} 標示為完成
+         </button>
+       </div>`
+    : '';
 
   return `
     <div class="${cardClass}" data-priority="${task.Priority || '一般'}" onclick="openTask('${task.TaskID}')">
       
-      <!-- 右上角編輯與刪除動作區 -->
-      <div style="position: absolute; top: 14px; right: 14px; display: flex; gap: 4px; z-index: 10;">
+      <!-- 右上角編輯與刪除動作區 (Hover 顯示) -->
+      <div class="card-actions">
         <button onclick="event.stopPropagation(); openQuickNotifyModal('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-2);" title="提醒設定">${icon('bell')}</button>
         ${!isCompleted ? `<button onclick="event.stopPropagation(); openEditTask('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-2);" title="編輯">${icon('edit')}</button>` : ''}
         <button onclick="event.stopPropagation(); deleteTaskDirectly('${task.TaskID}')" style="background:none; border:none; cursor:pointer; padding:5px; display:flex; align-items:center; color:var(--text-3);" title="刪除">${icon('trash')}</button>
@@ -1469,24 +1466,15 @@ function renderStickyNote(task) {
       
       <!-- 底部資訊 -->
       <div style="font-size: 12.5px; color: var(--text-2); margin-top: auto; display: flex; flex-direction: column; gap: 6px;">
-        <div style="display:flex; align-items:center; gap:4px;"><span style="opacity:0.5;">${icon('user', 'width:13px;height:13px;')}</span> 指派：<strong>${getAssigneeName(task.AssigneeEmail)}</strong></div>
+        ${assigneeLine}
         <div class="chip-due ${dueClass}" style="display: inline-flex; align-items: center; gap: 4px;">${icon('calendar')} 截止：${dueText}</div>
-        <div style="margin-top: 2px;">${alarmChip}</div>
+        ${alarmChip}
       </div>
       
-      <!-- 狀態或完成按鈕 -->
-      <div style="margin-top: 8px; z-index: 10;">
-        ${isCompleted 
-          ? `<div style="text-align:center; padding: 10px; font-weight: 700; color: var(--success); border: 2px dashed var(--success); border-radius: var(--radius-sm); font-size: 13px; background: var(--success-lt); display:flex; align-items:center; justify-content:center; gap:6px;">
-               ${icon('check')} 已完成
-             </div>`
-          : `<button onclick="markCompleted(event, '${task.TaskID}')" class="btn btn-success" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 8px;">
-               ${icon('check')} 標示為完成
-             </button>`
-        }
-      </div>
+      ${actionButton}
     </div>
   `;
+}
 }
 
 // 直接刪除便條紙
@@ -1724,38 +1712,8 @@ function renderTaskDetail(task) {
   document.getElementById('panel-actions').innerHTML = actions;
 }
 
-function buildUnderstandingSection(task, isAdmin, isAssignee) {
-  if (task.Understanding) {
-    // 已填寫
-    return `
-      <div class="info-value pre">${esc(task.Understanding)}</div>
-      ${isAdmin && task.Status === '等待主管確認' ? `
-        <div style="display:flex;gap:8px;margin-top:12px">
-          <button class="btn btn-success btn-sm" onclick="confirmUnderstanding('${task.TaskID}')">&#10003; 確認理解內容</button>
-          <button class="btn btn-outline btn-sm" onclick="rejectUnderstanding('${task.TaskID}')">&#8617; 退回修正</button>
-        </div>
-      ` : ''}
-    `;
-  } else if (isAssignee && task.Status === '等待理解') {
-    // 員工需填寫
-    return `
-      <div class="understanding-form">
-        <p style="font-size:13px;color:var(--text-2);margin-bottom:8px">
-          請先閱讀主管的交辦內容，再以自己的話描述你理解的工作內容。
-        </p>
-        <textarea id="understanding-input" class="form-control" rows="5"
-          placeholder="我要：&#10;1. …&#10;2. …&#10;&#10;預計完成日期：…"></textarea>
-        <div style="margin-top:10px;display:flex;justify-content:flex-end">
-          <button class="btn btn-primary" onclick="submitUnderstanding('${task.TaskID}')">
-            &#9998; 送出理解內容
-          </button>
-        </div>
-      </div>
-    `;
-  } else {
-    return `<div class="info-value empty">尚未填寫理解內容</div>`;
-  }
-}
+
+
 
 function buildActionButtons(task, isAdmin, isAssignee) {
   const btns = [];
@@ -1780,104 +1738,7 @@ function buildActionButtons(task, isAdmin, isAssignee) {
   return btns.join('');
 }
 
-// ═══════════════════════════════════════════════
-// 留言
-// ═══════════════════════════════════════════════
-async function loadAndRenderComments(taskId) {
-  try {
-    const comments = await api('getComments', { taskId });
-    renderComments(comments);
-  } catch (e) {
-    document.getElementById('comments-list').innerHTML =
-      `<div style="color:var(--text-3)">載入留言失敗</div>`;
-  }
-}
 
-function renderComments(comments) {
-  const list = document.getElementById('comments-list');
-  if (!list) return;
-
-  if (!comments || comments.length === 0) {
-    list.innerHTML = `<div style="color:var(--text-3);font-size:13px">尚無留言</div>`;
-    return;
-  }
-
-  list.innerHTML = comments.map(c => {
-    const isAdmin = c.AuthorRole === 'Admin';
-    const initial = c.AuthorName ? c.AuthorName.charAt(0).toUpperCase() : '?';
-    return `
-      <div class="comment-item fade-in">
-        <div class="comment-avatar ${isAdmin ? 'admin' : 'member'}">${initial}</div>
-        <div class="comment-body">
-          <div>
-            <span class="comment-author">${esc(c.AuthorName)}</span>
-            <span class="comment-role">${isAdmin ? '管理者' : '員工'}</span>
-          </div>
-          <div class="comment-content">${esc(c.Content)}</div>
-          <div class="comment-time">${c.CreatedAt ? formatDatetime(new Date(c.CreatedAt)) : ''}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
-
-async function sendComment() {
-  const input = document.getElementById('comment-input');
-  const content = (input.value || '').trim();
-  if (!content || !App.openTask) return;
-
-  input.value = '';
-  input.disabled = true;
-
-  try {
-    const comment = await api('addComment', {
-      taskId:  App.openTask.TaskID,
-      content
-    });
-    await loadAndRenderComments(App.openTask.TaskID);
-    showToast('留言已送出', 'success');
-  } catch (e) {
-    showToast('送出失敗：' + e.message, 'error');
-    input.value = content;
-  } finally {
-    input.disabled = false;
-    input.focus();
-  }
-}
-
-// ═══════════════════════════════════════════════
-// 任務操作
-// ═══════════════════════════════════════════════
-async function submitUnderstanding(taskId) {
-  const val = (document.getElementById('understanding-input')?.value || '').trim();
-  if (!val) { showToast('請輸入理解內容', 'warning'); return; }
-
-  try {
-    await api('submitUnderstanding', { taskId, understanding: val });
-    showToast('理解內容已送出！等待主管確認', 'success');
-    await refreshTask(taskId);
-  } catch (e) {
-    showToast(e.message, 'error');
-  }
-}
-
-async function confirmUnderstanding(taskId) {
-  if (!confirm('確認員工理解內容正確，進入「進行中」狀態？')) return;
-  try {
-    await api('confirmUnderstanding', { taskId });
-    showToast('已確認！任務進入進行中', 'success');
-    await refreshTask(taskId);
-  } catch (e) { showToast(e.message, 'error'); }
-}
-
-async function rejectUnderstanding(taskId) {
-  if (!confirm('退回員工理解內容，讓員工重新填寫？\n請記得在留言中說明修正方向。')) return;
-  try {
-    await api('rejectUnderstanding', { taskId });
-    showToast('已退回，請在留言中說明修正方向', 'warning');
-    await refreshTask(taskId);
-  } catch (e) { showToast(e.message, 'error'); }
-}
 
 async function markComplete(taskId) {
   if (!confirm('確認已完成此任務並送交主管驗收？')) return;

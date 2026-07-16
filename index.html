@@ -1820,6 +1820,7 @@ function formatForDatetimeLocal(dateStr) {
 function showTaskModal(task) {
   const isEdit = !!task;
   const allUsers = App.users;
+  const isAdmin = App.user.Role === 'Admin';
 
   const userOptions = allUsers.map(m =>
     `<option value="${m.Email}" ${task?.AssigneeEmail===m.Email?'selected':''}>${m.Name}（${m.Role === 'Admin' ? '管理者' : '員工'}）</option>`
@@ -1839,6 +1840,7 @@ function showTaskModal(task) {
       <label class="form-label">交辦內容 <span class="required">*</span></label>
       <textarea id="f-desc" class="form-control" rows="4" placeholder="詳細說明工作內容、要求和目標…">${esc(task?.Description||'')}</textarea>
     </div>
+    ${isAdmin ? `
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">指派人 <span class="required">*</span></label>
@@ -1848,6 +1850,7 @@ function showTaskModal(task) {
         </select>
       </div>
     </div>
+    ` : `<input type="hidden" id="f-assignee" value="${task?.AssigneeEmail || App.user.Email}">`}
     <div class="form-group">
       <label class="form-label">截止時間 <span class="required">*</span></label>
       <input id="f-due" type="datetime-local" class="form-control" value="${formatForDatetimeLocal(task?.DueDate)}">

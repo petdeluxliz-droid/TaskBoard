@@ -1700,11 +1700,7 @@ function renderTaskDetail(task) {
       <div class="info-value pre">${esc(task.Description || '')}</div>
     </div>
 
-    ${task.Notes ? `
-    <div class="info-block">
-      <div class="info-label">備註</div>
-      <div class="info-value pre">${esc(task.Notes)}</div>
-    </div>` : ''}
+
   `;
 
   document.getElementById('panel-body').innerHTML = body;
@@ -2073,7 +2069,6 @@ function renderUsers() {
             <th>Email</th>
             <th>角色</th>
             <th>部門</th>
-            <th>PIN 碼 (密碼)</th>
             <th>操作</th>
           </tr>
         </thead>
@@ -2084,7 +2079,6 @@ function renderUsers() {
               <td>${esc(u.Email)}</td>
               <td><span class="chip" style="background:${u.Role==='Admin'?'var(--primary-lt)':'var(--success-lt)'};color:${u.Role==='Admin'?'var(--primary)':'var(--success)'};border:none">${u.Role}</span></td>
               <td>${esc(u.Department||'—')}</td>
-              <td><code style="background:#FFF9E6;padding:4px 8px;border-radius:4px;border:1px solid #FFE499;font-weight:700;">${esc(u.PIN || '1234')}</code></td>
               <td>
                 ${u.Email !== App.user.Email ? `
                   <button class="btn btn-outline btn-sm" style="color:var(--danger);border-color:var(--danger)"

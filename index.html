@@ -1452,7 +1452,7 @@ function renderDashboard() {
   // 基礎過濾：一般員工只能看到指派給自己的任務；管理者預設看到所有人的任務，但可勾選「只顯示指派給我的任務」來過濾
   let tasks = App.tasks;
   if (!isAdmin || App.showMineOnly) {
-    tasks = tasks.filter(t => t.AssigneeEmail === App.user.Email);
+    tasks = tasks.filter(t => String(t.AssigneeEmail || '').toLowerCase().trim() === String(App.user.Email || '').toLowerCase().trim());
   }
 
   // 依據 showCompleted 狀態決定是否過濾掉已完成、已封存任務
@@ -1639,7 +1639,7 @@ function isDueToday(task) {
 // ═══════════════════════════════════════════════
 function renderTaskList(mode) {
   let tasks = App.tasks;
-  if (mode === 'mine') tasks = tasks.filter(t => t.AssigneeEmail === App.user.Email);
+  if (mode === 'mine') tasks = tasks.filter(t => String(t.AssigneeEmail || '').toLowerCase().trim() === String(App.user.Email || '').toLowerCase().trim());
   if (mode === 'done') tasks = tasks.filter(t => ['完成','封存'].includes(t.Status));
   else if (mode !== 'all') tasks = tasks.filter(t => !['完成','封存'].includes(t.Status));
 
@@ -1770,7 +1770,7 @@ function closePanel() {
 
 function renderTaskDetail(task) {
   const isAdmin  = App.user.Role === 'Admin';
-  const isAssignee = task.AssigneeEmail === App.user.Email;
+  const isAssignee = String(task.AssigneeEmail || '').toLowerCase().trim() === String(App.user.Email || '').toLowerCase().trim();
 
   document.getElementById('panel-task-title').textContent = task.Title;
 

@@ -1823,9 +1823,6 @@ function buildActionButtons(task, isAdmin, isAssignee) {
   const btns = [];
 
   if (isAdmin) {
-    if (task.Status !== '完成' && task.Status !== '封存') {
-      btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;" onclick="openEditTask('${task.TaskID}')">${icon('edit')} 編輯任務</button>`);
-    }
     if (task.Status === '待驗收') {
       btns.push(`<button class="btn btn-success" style="display:inline-flex;align-items:center;gap:6px;" onclick="acceptTask('${task.TaskID}')">${icon('check')} 驗收完成</button>`);
     }
@@ -1839,9 +1836,10 @@ function buildActionButtons(task, isAdmin, isAssignee) {
     btns.push(`<button class="btn btn-primary" style="display:inline-flex;align-items:center;gap:6px;" onclick="markComplete('${task.TaskID}')">${icon('check')} 標示完成</button>`);
   }
 
-  // 提醒設定：未完成前，指派人與管理員皆可調整
+  // 編輯任務與提醒設定：未完成前，指派執行人與管理員皆可操作 (與原先卡片按鈕權限一致)
   if (task.Status !== '完成' && task.Status !== '封存') {
     if (isAssignee || isAdmin) {
+      btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;" onclick="openEditTask('${task.TaskID}')">${icon('edit')} 編輯任務</button>`);
       btns.push(`<button class="btn btn-outline btn-sm" style="display:inline-flex;align-items:center;gap:6px;" onclick="openQuickNotifyModal('${task.TaskID}')">${icon('bell')} 提醒設定</button>`);
     }
   }

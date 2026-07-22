@@ -1328,9 +1328,13 @@ function logout() {
 // ═══════════════════════════════════════════════
 // 側邊欄渲染
 // ═══════════════════════════════════════════════
+function isUserAdmin(u) {
+  return !!(u && String(u.Role || '').trim().toLowerCase() === 'admin');
+}
+
 function renderSidebar() {
   const u = App.user;
-  const isAdmin = u.Role === 'Admin';
+  const isAdmin = isUserAdmin(u);
   const initials = u.Name ? u.Name.charAt(0).toUpperCase() : u.Email.charAt(0).toUpperCase();
 
   document.getElementById('avatar-initials').textContent = initials;
@@ -1447,7 +1451,7 @@ async function switchView(view) {
 // Dashboard 渲染
 // ═══════════════════════════════════════════════
 function renderDashboard() {
-  const isAdmin = App.user.Role === 'Admin';
+  const isAdmin = isUserAdmin(App.user);
   
   // 基礎過濾：一般員工只能看到指派給自己的任務；管理者預設看到所有人的任務，但可勾選「只顯示指派給我的任務」來過濾
   let tasks = App.tasks;
@@ -1537,7 +1541,7 @@ function renderStickyNote(task) {
     }
   }
 
-  const isAdmin = App.user.Role === 'Admin';
+  const isAdmin = isUserAdmin(App.user);
   const assigneeLine = isAdmin ? `<div style="display:flex; align-items:center; gap:4px;"><span style="opacity:0.5;">${icon('user', 'width:13px;height:13px;')}</span> 指派：<strong>${getAssigneeName(task.AssigneeEmail)}</strong></div>` : '';
 
   // 只有未完成的任務才顯示完成按鈕 (已完成任務不顯示 any 按鈕/虛線框以減少高度與噪音)
@@ -1675,7 +1679,7 @@ function setFilterList(f, mode) {
 // 任務卡片 HTML
 // ═══════════════════════════════════════════════
 function renderTaskCard(task) {
-  const isAdmin  = App.user.Role === 'Admin';
+  const isAdmin  = isUserAdmin(App.user);
   const due      = task.DueDate ? new Date(task.DueDate) : null;
   const today    = new Date(); today.setHours(0,0,0,0);
   const isOverdue = due && due < today && !['完成','封存'].includes(task.Status);
@@ -1753,7 +1757,7 @@ async function openTask(taskId) {
     App.openTask = task;
 
     // 載入 Users（Admin 需要姓名對應）
-    if (App.user.Role === 'Admin' && App.users.length === 0) await loadUsers();
+    if (isUserAdmin(App.user) && App.users.length === 0) await loadUsers();
 
     renderTaskDetail(task);
   } catch (e) {
@@ -1769,7 +1773,7 @@ function closePanel() {
 }
 
 function renderTaskDetail(task) {
-  const isAdmin  = App.user.Role === 'Admin';
+  const isAdmin  = isUserAdmin(App.user);
   const isAssignee = String(task.AssigneeEmail || '').toLowerCase().trim() === String(App.user.Email || '').toLowerCase().trim();
 
   document.getElementById('panel-task-title').textContent = task.Title;
@@ -1930,10 +1934,9 @@ function formatForDatetimeLocal(dateStr) {
 function showTaskModal(task) {
   const isEdit = !!task;
   const allUsers = App.users;
-  const isAdmin = App.user.Role === 'Admin';
-
-  const userOptions = allUsers.map(m =>
-    `<option value="${m.Email}" ${task?.AssigneeEmail===m.Email?'selected':''}>${m.Name}（${m.Role === 'Admin' ? '管理者' : '員工'}）</option>`
+  const isAdmin = isUserAdmin(App.user);
+  const options = App.users.map(m =>
+    `<option value="${m.Email}" ${task?.AssigneeEmail===m.Email?'selected':''}>${m.Name}（${isUserAdmin(m) ? '管理者' : '員工'}）</option>`
   ).join('');
 
   const taskNotifyDays = task && task.Notes ? String(task.Notes).split(',').map(s => s.trim()).filter(Boolean) : [];
